@@ -14,7 +14,7 @@ use lib '/home/gt234sf/GT234SF/lib/';
 use Database;
 use Command;
 
-my $_Raw001 = sub
+my $_Raw001 = sub 
 {
 	my $self					= shift(@_);
 	my $fullRawFromServer		= shift(@_);
@@ -22,8 +22,17 @@ my $_Raw001 = sub
 	$self->{ _paramConnectedServer }->{ serverName } =  substr((split(/\s/, $fullRawFromServer))[0], 1);
 	say "[" . localtime->hms . "] Connected to server " . $self->{ _paramConnectedServer }->{ serverName };
 
-	$self->{ _destinationServer }->send("PRIVMSG NickServ :IDENTIFY " . $self->{ _yamlFileConfig }->{ credentials }->{ password } . "\r\n") if $self->{ _yamlFileConfig }->{ credentials }->{ password };
-	$self->{ _destinationServer }->send("JOIN " . $self->{ _yamlFileConfig }->{ config }->{ rooms } . "\r\n") if ($self->{ _yamlFileConfig }->{ config }->{ autojoin });
+	$self->{ _destinationServer }->send(
+										"PRIVMSG NickServ :IDENTIFY " . 
+										$self->{ _yamlFileConfig }->{ credentials }->{ password } . 
+										"\r\n") 
+										if $self->{ _yamlFileConfig }->{ credentials }->{ password };
+
+	$self->{ _destinationServer }->send(
+										"JOIN " . 
+										$self->{ _yamlFileConfig }->{ config }->{ rooms } . 
+										"\r\n") 
+										if ($self->{ _yamlFileConfig }->{ config }->{ autojoin });
 
 	$self->{ _commandModule } = new Command($self->{ _destinationServer }, $self->{ _databaseHandShake });
 	$self->{ _commandModule }->ConfigureCoreCommand();
@@ -33,7 +42,7 @@ my $_Raw001 = sub
 	return 0;
 };
 
-my $_RawPRIVMSG = sub
+my $_RawPRIVMSG = sub 
 {
 	my $self					= shift(@_);
 	my $fullRawFromServer		= shift(@_);
@@ -55,7 +64,7 @@ my $_RawPRIVMSG = sub
 	return 0;
 };
 
-my $_AnalyzeRawFromServer = sub
+my $_AnalyzeRawFromServer = sub 
 {
 	my $self								= shift(@_);
 	my $fullRawFromServer					= shift(@_);
@@ -82,7 +91,7 @@ my $_AnalyzeRawFromServer = sub
 	return 0;
 };
 
-sub new
+sub new 
 {
 	my $class 				= shift(@_);
 	my $self 				= {};
@@ -92,7 +101,7 @@ sub new
 	return $self;
 }
 
-sub ConnectToDestinationServer
+sub ConnectToDestinationServer 
 {
     my $self 				= shift(@_);
 	my $sourceFromSocket;

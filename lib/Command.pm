@@ -30,16 +30,16 @@ my $_Command001 = sub
 {
 	my $self                = shift(@_);
     my $fullRawFromServer   = shift(@_);
-    my $paramRoomFromRaw;
+    my $paramsCommandFromRaw;
 
-    $paramRoomFromRaw = (split(/\s/,$fullRawFromServer->{ _msgFromRaw }))[1];
+    $paramsCommandFromRaw = (split(/\s/,$fullRawFromServer->{ _msgFromRaw }))[1];
 
     if ($self->$_CheckUserIsAdmin($fullRawFromServer->{ _nickFromRaw }))
     {
-        if ($paramRoomFromRaw)
+        if ($paramsCommandFromRaw)
         {
-            $self->{ _destinationServer }->send("PART " . $paramRoomFromRaw . "\r\n");
-            $self->{ _destinationServer }->send("JOIN " . $paramRoomFromRaw . "\r\n");
+            $self->{ _destinationServer }->send("PART " . $paramsCommandFromRaw . "\r\n");
+            $self->{ _destinationServer }->send("JOIN " . $paramsCommandFromRaw . "\r\n");
         }
     }
 
@@ -50,15 +50,15 @@ my $_Command002 = sub
 {
 	my $self                = shift(@_);
     my $fullRawFromServer   = shift(@_);
-    my $paramRoomFromRaw;
+    my $paramsCommandFromRaw;
 
-    $paramRoomFromRaw = (split(/\s/ , $fullRawFromServer->{ _msgFromRaw }))[1];
+    $paramsCommandFromRaw = (split(/\s/ , $fullRawFromServer->{ _msgFromRaw }))[1];
 
     if ($self->$_CheckUserIsAdmin($fullRawFromServer->{ _nickFromRaw }))
     {
-        if ($paramRoomFromRaw)
+        if ($paramsCommandFromRaw)
         {
-            $self->{ _destinationServer }->send("JOIN " . $paramRoomFromRaw . "\r\n");
+            $self->{ _destinationServer }->send("JOIN " . $paramsCommandFromRaw . "\r\n");
         }
     }
 
@@ -69,15 +69,15 @@ my $_Command003 = sub
 {
 	my $self                = shift(@_);
     my $fullRawFromServer   = shift(@_);
-    my $paramRoomFromRaw;
+    my $paramsCommandFromRaw;
 
-    $paramRoomFromRaw = (split(/\s/ , $fullRawFromServer->{ _msgFromRaw }))[1];
+    $paramsCommandFromRaw = (split(/\s/ , $fullRawFromServer->{ _msgFromRaw }))[1];
 
     if ($self->$_CheckUserIsAdmin($fullRawFromServer->{ _nickFromRaw }))
     {
-        if ($paramRoomFromRaw)
+        if ($paramsCommandFromRaw)
         {
-            $self->{ _destinationServer }->send("PART " . $paramRoomFromRaw . "\r\n");
+            $self->{ _destinationServer }->send("PART " . $paramsCommandFromRaw . "\r\n");
         }
     }
 
