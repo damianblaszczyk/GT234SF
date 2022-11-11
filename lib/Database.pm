@@ -12,16 +12,16 @@ use lib '/home/gt234sf/GT234SF/lib/';
 
 sub new
 {
-	my $class	= shift(@_);
+	my $class	= shift;
 	my $self;
 
 	$self = 
 	{
-		_host		=>	shift(@_),
-		_port		=>	shift(@_),
-		_username	=>	shift(@_),
-		_password	=>	shift(@_),
-		_namebase	=>	shift(@_),
+		_host		=>	shift,
+		_port		=>	shift,
+		_username	=>	shift,
+		_password	=>	shift,
+		_namebase	=>	shift,
 	};
 
 	for (keys % { $self })
@@ -34,11 +34,11 @@ sub new
 	return $self;
 }
 
-sub ConnectDatabaseMySQL
+sub ConfigureModuleDatabase
 {
-	my $self 	= shift(@_);
+	my $self 	= shift;
 
-	$self->{_databaseHandShake} = DBI->connect
+	$self->{_databaseModule} = DBI->connect
 	(
 		"DBI:mysql:database=" . $self->{ _namebase } . ";host=" . $self->{ _host } . ":" . $self->{ _port },
 		$self->{ _username },
@@ -53,23 +53,23 @@ sub ConnectDatabaseMySQL
 	) or die "Problem with DBI connect: ".$!;
 
 	say "[" . localtime->hms . "] Available DBI drivers: " . join( " " , DBI->available_drivers() );
-	say "[" . localtime->hms . "] Available tables: " . join( " " , $self->{ _databaseHandShake }->tables() );
+	say "[" . localtime->hms . "] Available tables: " . join( " " , $self->{ _databaseModule }->tables() );
 
 	return;
 }
 
 sub InsertDataToLogPrivmsg
 {
-	my $self    			= shift(@_);
-	my $messageStructure 	= shift(@_);
+	my $self    			= shift;
+	my $rawFullStructure 	= shift;
 	my $sth;
 
-	$sth = $self->{ _databaseHandShake }->prepare("INSERT INTO `log_privmsg` (`id`, `nick`, `message`, `ircname`, `host`, `channel`) VALUES (NULL, ?, ?, ?, ?, ?);");
-	$sth->execute( 	$messageStructure->{ _nickFromRaw }, 
-					$messageStructure->{ _msgFromRaw }, 
-					$messageStructure->{ _ircnameFromRaw }, 
-					$messageStructure->{ _hostFromRaw }, 
-					$messageStructure->{ _channelFromRaw });
+	$sth = $self->{ _databaseModule }->prepare("INSERT INTO `log_privmsg` (`id`, `nick`, `message`, `ircname`, `host`, `channel`) VALUES (NULL, ?, ?, ?, ?, ?);");
+	$sth->execute( 	$rawFullStructure->{ _nickFromRaw }, 
+					$rawFullStructure->{ _msgFromRaw }, 
+					$rawFullStructure->{ _ircnameFromRaw }, 
+					$rawFullStructure->{ _hostFromRaw }, 
+					$rawFullStructure->{ _channelFromRaw });
 	$sth->finish();
 
 	return;
@@ -77,11 +77,11 @@ sub InsertDataToLogPrivmsg
 
 sub SelectAdminListFromDataBase
 {
-	my $self			= shift(@_);
-	my $referenceToCore	= shift(@_);
+	my $self			= shift;
+	my $referenceToCore	= shift;
 	my $sth;
 
-	$sth = $self->{ _databaseHandShake }->prepare("SELECT `nick` FROM `admin_list`");
+	$sth = $self->{ _databaseModule }->prepare("SELECT `nick` FROM `admin_list`");
 	$sth->execute();
 
 	while (my ($nick) = $sth->fetchrow_array())
@@ -107,13 +107,13 @@ sub DebugQueryToDatabase
 	# $sth->execute();
 	# $sth->dump_results();
 
-	# my @tablice = $self->{ _databaseHandShake }->tables();
+	# my @tablice = $self->{ _databaseModule }->tables();
 
-	# $sth = $self->{ _databaseHandShake }->table_info('', '%', '');
-	# my $schemas = $self->{ _databaseHandShake }->selectcol_arrayref($sth, {Columns => [2]});
+	# $sth = $self->{ _databaseModule }->table_info('', '%', '');
+	# my $schemas = $self->{ _databaseModule }->selectcol_arrayref($sth, {Columns => [2]});
 	# print "Schemas: ", join ', ', @$schemas;
 
-	return 0;
+	return;
 }
 
 1;

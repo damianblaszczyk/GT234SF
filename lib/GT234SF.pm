@@ -16,8 +16,8 @@ use Command;
 
 my $_Raw001 = sub 
 {
-	my $self					= shift(@_);
-	my $fullRawFromServer		= shift(@_);
+	my $self					= shift;
+	my $fullRawFromServer		= shift;
 
 	$self->{ _paramConnectedServer }->{ serverName } =  substr((split(/\s/, $fullRawFromServer))[0], 1);
 	say "[" . localtime->hms . "] Connected to server " . $self->{ _paramConnectedServer }->{ serverName };
@@ -34,40 +34,40 @@ my $_Raw001 = sub
 										"\r\n") 
 										if ($self->{ _yamlFileConfig }->{ config }->{ autojoin });
 
-	$self->{ _commandModule } = new Command($self->{ _destinationServer }, $self->{ _databaseHandShake });
-	$self->{ _commandModule }->ConfigureCoreCommand();
+	$self->{ _commandModule } = new Command($self->{ _destinationServer }, $self->{ _databaseModule });
+	$self->{ _commandModule }->ConfigureModuleCommand();
 
 	# use Data::Dumper;
 	# print Dumper($self);
-	return 0;
+	return;
 };
 
 my $_RawPRIVMSG = sub 
 {
-	my $self					= shift(@_);
-	my $fullRawFromServer		= shift(@_);
-	my $messageStructure 		= {};
+	my $self					= shift;
+	my $fullRawFromServer		= shift;
+	my $rawFullStructure 		= {};
 
-	$messageStructure->{ _channelFromRaw } 		= (split(/\s/, $fullRawFromServer, 4))[2];
-	$messageStructure->{ _msgFromRaw } 			= substr((split(/\s/, $fullRawFromServer, 4))[3], 1);
-	$messageStructure->{ _nickFromRaw } 		= substr((split(/\!/, (split(/\s/, $fullRawFromServer, 4))[0]))[0], 1);
-	$messageStructure->{ _ircnameFromRaw } 		= (split(/\@/,(split(/\!/, (split(/\s/, $fullRawFromServer, 4))[0]))[1]))[0];
-	$messageStructure->{ _hostFromRaw } 		= (split(/\@/, (split(/\s/, $fullRawFromServer, 4))[0]))[1];
+	$rawFullStructure->{ _channelFromRaw } 		= (split(/\s/, $fullRawFromServer, 4))[2];
+	$rawFullStructure->{ _msgFromRaw } 			= substr((split(/\s/, $fullRawFromServer, 4))[3], 1);
+	$rawFullStructure->{ _nickFromRaw } 		= substr((split(/\!/, (split(/\s/, $fullRawFromServer, 4))[0]))[0], 1);
+	$rawFullStructure->{ _ircnameFromRaw } 		= (split(/\@/,(split(/\!/, (split(/\s/, $fullRawFromServer, 4))[0]))[1]))[0];
+	$rawFullStructure->{ _hostFromRaw } 		= (split(/\@/, (split(/\s/, $fullRawFromServer, 4))[0]))[1];
 
-	$messageStructure->{ _msgFromRaw } =~ s/%C.*?%//g;
-	$messageStructure->{ _msgFromRaw } =~ s/%I(.*?)%/<$1>/g;
-	$messageStructure->{ _msgFromRaw } =~ s/%F.*?%//g;
+	$rawFullStructure->{ _msgFromRaw } =~ s/%C.*?%//g;
+	$rawFullStructure->{ _msgFromRaw } =~ s/%I(.*?)%/<$1>/g;
+	$rawFullStructure->{ _msgFromRaw } =~ s/%F.*?%//g;
 
-	$self->{ _commandModule }->RunCoreCommand($messageStructure);
-	$self->{ _databaseHandShake }->InsertDataToLogPrivmsg($messageStructure);
+	$self->{ _commandModule }->RunCoreCommand($rawFullStructure);
+	$self->{ _databaseModule }->InsertDataToLogPrivmsg($rawFullStructure);
 
-	return 0;
+	return;
 };
 
 my $_AnalyzeRawFromServer = sub 
 {
-	my $self								= shift(@_);
-	my $fullRawFromServer					= shift(@_);
+	my $self								= shift;
+	my $fullRawFromServer					= shift;
 	my $actionClientDefinedByRawServer;
 
 	$actionClientDefinedByRawServer = 
@@ -88,12 +88,12 @@ my $_AnalyzeRawFromServer = sub
 		}
 	}
 
-	return 0;
+	return;
 };
 
 sub new 
 {
-	my $class 				= shift(@_);
+	my $class 				= shift;
 	my $self 				= {};
 
 	bless $self => $class;
@@ -103,17 +103,17 @@ sub new
 
 sub ConnectToDestinationServer 
 {
-    my $self 				= shift(@_);
+    my $self 				= shift;
 	my $sourceFromSocket;
 
 	$self->{ _yamlFileConfig } = YAML::XS::LoadFile('config.yml') or die "Problem with YAML file: ".$!;
 
-	$self->{ _databaseHandShake } = new Database(	$self->{ _yamlFileConfig }->{ database }->{ host }, 
+	$self->{ _databaseModule } = new Database(	$self->{ _yamlFileConfig }->{ database }->{ host }, 
 													$self->{ _yamlFileConfig }->{ database }->{ port }, 
 													$self->{ _yamlFileConfig }->{ database }->{ username }, 
 													$self->{ _yamlFileConfig }->{ database }->{ password }, 
 													$self->{ _yamlFileConfig }->{ database }->{ namebase });
-	$self->{ _databaseHandShake }->ConnectDatabaseMySQL();
+	$self->{ _databaseModule }->ConfigureModuleDatabase();
 
 	$self->{ _destinationServer } = IO::Socket::INET->new
 	(
