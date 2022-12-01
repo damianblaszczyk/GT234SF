@@ -138,12 +138,11 @@ sub RunCoreCommand
         '!join' 		=> sub {$self->$_Command002($rawFullStructure)},
         '!part' 		=> sub {$self->$_Command003($rawFullStructure)},
 	};
+    
 	if (defined $actionClientDefinedByCommand->{(split(/\s/ , $rawFullStructure->{ _msgFromRaw }))[0]})
 	{
 		$actionClientDefinedByCommand->{(split(/\s/ , $rawFullStructure->{ _msgFromRaw }))[0]}->($rawFullStructure);
 	}
-
-    say ((split(/\s/ , $rawFullStructure->{ _msgFromRaw }))[0]);
 
     return;
 }

@@ -24,14 +24,12 @@ my $_Raw001 = sub
 
 	$self->{ _destinationServer }->send(
 										"PRIVMSG NickServ :IDENTIFY " . 
-										$self->{ _yamlFileConfig }->{ credentials }->{ password } . 
-										"\r\n") 
+										$self->{ _yamlFileConfig }->{ credentials }->{ password } . "\r\n") 
 										if $self->{ _yamlFileConfig }->{ credentials }->{ password };
 
 	$self->{ _destinationServer }->send(
 										"JOIN " . 
-										$self->{ _yamlFileConfig }->{ config }->{ rooms } . 
-										"\r\n") 
+										$self->{ _yamlFileConfig }->{ config }->{ rooms } . "\r\n") 
 										if ($self->{ _yamlFileConfig }->{ config }->{ autojoin });
 
 	$self->{ _commandModule } = new Command($self->{ _destinationServer }, $self->{ _databaseModule });
@@ -104,7 +102,7 @@ sub new
 sub ConnectToDestinationServer 
 {
     my $self 				= shift;
-	my $sourceFromSocket;
+	my $dataFromSocket;
 
 	$self->{ _yamlFileConfig } = YAML::XS::LoadFile('config.yml') or die "Problem with YAML file: ".$!;
 
@@ -131,8 +129,8 @@ sub ConnectToDestinationServer
 							.$self->{ _yamlFileConfig }->{ credentials }->{ realname }." "
 							.$self->{ _yamlFileConfig }->{ build }->{ version }."\r\n");
 
-	$sourceFromSocket = $self->{ _destinationServer };
-    while(my $fullRawFromServer = <$sourceFromSocket>)
+	$dataFromSocket = $self->{ _destinationServer };
+    while(my $fullRawFromServer = <$dataFromSocket>)
     {
 		trim($fullRawFromServer);
         $self->$_AnalyzeRawFromServer($fullRawFromServer);
