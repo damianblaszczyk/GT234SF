@@ -7,19 +7,22 @@
 use warnings;
 use strict;
 
-use lib '/home/gt234sf/GT234SF/lib/';
+use lib '/home/damian/GT234SF/lib/';
 use GT234SF;
 
 sub main () 
 {
     my $GT234SF;
 
-    eval 
+    while (1)
     {
-        $GT234SF = new GT234SF();
-        $GT234SF->ConnectToDestinationServer();
-    }; warn $@ if $@;
-
+        eval 
+        {
+            $GT234SF = new GT234SF();
+            $GT234SF->ConnectToDestinationServer();
+        }; warn $@ if $@;
+        sleep 1;
+    }
     return;
 }
 
