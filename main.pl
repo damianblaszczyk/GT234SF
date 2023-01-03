@@ -7,7 +7,7 @@
 use warnings;
 use strict;
 
-use lib '/home/damian/GT234SF/lib/';
+use lib '/home/damian/Projects/GT234SF/lib/';
 use GT234SF;
 
 sub main () 

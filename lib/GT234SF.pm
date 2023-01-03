@@ -10,7 +10,7 @@ use String::Trim;
 use Time::Piece;
 use feature qw( say );
 
-use lib '/home/damian/GT234SF/lib/';
+use lib '/home/damian/Projects/GT234SF/lib/';
 use Database;
 use Command;
 

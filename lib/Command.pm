@@ -8,7 +8,7 @@ use DBI;
 use feature qw( say );
 use Encode 'encode';
 
-use lib '/home/damian/GT234SF/lib/';
+use lib '/home/damian/Projects/GT234SF/lib/';
 use Database;
 use Poland::Weather;
 
